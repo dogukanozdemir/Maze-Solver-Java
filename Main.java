@@ -61,7 +61,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		JMenu options =  new JMenu("Ayarlar");
 		bar.add(options);
 		
-		JMenuItem exit =  new JMenuItem("Exit");
+		JMenuItem exit =  new JMenuItem("Cikis");
 		JMenuItem newGrid =  new JMenuItem("Yeni Tahta");
 		JMenuItem calcPath =  new JMenuItem("Yolu Hesapla");
 		
@@ -83,7 +83,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 				}
 				else
 				{
-					System.out.println("Something seems to be null bro");
+					System.out.println("Nir sey null gibi gozukuyor");
 				}
 				System.out.println(runTimeMain.breadthSearch());
 			}
@@ -365,13 +365,4 @@ public class Main extends Canvas implements Runnable, MouseListener
 	}
 	public void mouseReleased(MouseEvent e) {
 	}
-	/*if(curNode.getLeft() != null && curNode.getRight() != null &&  curNode.getUp() != null && curNode.getDown() != null)
-	{
-		if((curNode.getLeft().isPath()  || curNode.getRight().isPath()) && (curNode.getUp().isPath() || curNode.getDown().isPath()))
-		{
-			curNode.SetColor(Color.BLUE);
-		}
-			
-
-	}*/
 }
