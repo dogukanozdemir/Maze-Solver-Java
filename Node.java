@@ -21,10 +21,7 @@ public class Node {
 		Xpos = x;
 		Ypos = y;
 	}
-	public Node()
-	{
-		
-	}
+	public Node(){}
 	public void render(Graphics2D g)
 	{
 		g.setColor(Color.BLACK);

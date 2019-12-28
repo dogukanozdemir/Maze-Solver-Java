@@ -34,7 +34,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 	private final static int HEIGHT = 640;
 	public static void main(String[] args)
 	{
-		JFrame frame = new JFrame("En Kisa Yolu Bulma");
+		JFrame frame = new JFrame("Maze Solver");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(WIDTH,HEIGHT);
 		frame.setResizable(false);
@@ -56,14 +56,14 @@ public class Main extends Canvas implements Runnable, MouseListener
 		JMenuBar bar = new JMenuBar();
 		bar.setBounds(0, 0, WIDTH, 25);
 		frame.add(bar);
-		JMenu file = new JMenu("Dosya");
+		JMenu file = new JMenu("File");
 		bar.add(file);
-		JMenu options =  new JMenu("Ayarlar");
+		JMenu options =  new JMenu("Options");
 		bar.add(options);
 		
-		JMenuItem exit =  new JMenuItem("Cikis");
-		JMenuItem newGrid =  new JMenuItem("Yeni Tahta");
-		JMenuItem calcPath =  new JMenuItem("Yolu Hesapla");
+		JMenuItem exit =  new JMenuItem("Exit");
+		JMenuItem newGrid =  new JMenuItem("New Board");
+		JMenuItem calcPath =  new JMenuItem("Calculate Path");
 		
 		exit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -77,15 +77,8 @@ public class Main extends Canvas implements Runnable, MouseListener
 		});
 		calcPath.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				if(start != null && target != null)
-				{
-					System.out.println(runTimeMain.GetDistance(start, target));
-				}
-				else
-				{
-					System.out.println("Nir sey null gibi gozukuyor");
-				}
-				System.out.println(runTimeMain.breadthSearch());
+				runTimeMain.LocateJunctions();
+				
 			}
 			
 		});
@@ -129,7 +122,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		//check
 		requestFocus();
 		addMouseListener(this);
-		nodeList = new Node[10][10];
+		nodeList = new Node[15][15];
 		refreshNodes();
 		SetMazeDirections();
 	}
@@ -188,35 +181,52 @@ public class Main extends Canvas implements Runnable, MouseListener
 		new Thread(this).start();
 	}
 	public void mousePressed(MouseEvent e) {
+
+		// 1 is for left Click
+		// 2 is for Middle Click
+		// 3 is for Right Click
+
 		Node clickedNode = getNodeAt(e.getX(),e.getY());
-		if(clickedNode != null && e.getClickCount() < 2) clickedNode.Clicked(e.getButton());
-		else if(clickedNode != null && e.getClickCount() >= 2) clickedNode.Clicked(4);
-		if(clickedNode.isEnd())
-		{	
-			if(target != null)
-			{
-				target.clearNode();
+
+		if(clickedNode == null) return;
+			clickedNode.Clicked(e.getButton());
+	
+	}
+	public boolean isMazeComplete(){
+		boolean start = false; 
+		boolean end = false;
+		for(int i = 0; i < nodeList.length; i++){
+			for(int j = 0; j < nodeList[i].length;j++){
+				if(nodeList[i][j].isEnd()){
+					end = true;
+				}else if(nodeList[i][j].isStart()){
+					start = true;
+				}
 			}
-			target = clickedNode;	
 		}
-		if(clickedNode.isStart())
-		{
-			
-			if(start != null)
-			{
-				start.clearNode();
+		if(start && end){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	private Node getStart(){
+		for(int i = 0; i < nodeList.length; i++){
+			for(int j = 0; j < nodeList[i].length;j++){
+				if(nodeList[i][j].isStart()){
+					return nodeList[i][j];
+				}
 			}
-			start = clickedNode;
-		}	
+		}
+		return null;
 	}
 	public boolean breadthSearch()
 	{	
-		if(start == null || target == null) return false;
-		
 		ArrayList<Node> closed = new ArrayList<Node>();
 		boolean completed = false;
 		boolean succesfull = false;
-		Node curNode = start;
+		Node curNode = getStart();
+
 		while(!completed)
 		{
 			
@@ -315,20 +325,6 @@ public class Main extends Canvas implements Runnable, MouseListener
 			}
 		}	
 	}	
-	public double GetDistance(Node a,Node b)
-	{
-		int x1 = a.getX();
-		System.out.println(x1);
-		int y1 = a.getY();
-		System.out.println(y1);
-		
-		int x2 = b.getX();
-		System.out.println(x2);
-		int y2 = b.getY();
-		System.out.println(y2);
-		
-		return Math.abs(Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)));
-	}
 	public Node getNodeAt(int x, int y)
 	{
 		x -= 15;
