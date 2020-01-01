@@ -25,6 +25,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 
 	private static Node start = null;
 	private static Node target = null;
+	
 	private Node[][] nodeList;
 	private ArrayList<Node> Junctions = new ArrayList<Node>();
 	private static Main runTimeMain;
@@ -77,7 +78,11 @@ public class Main extends Canvas implements Runnable, MouseListener
 		});
 		calcPath.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				runTimeMain.LocateJunctions();
+				if(runTimeMain.isMazeComplete()){
+					runTimeMain.depthFirstSearch(runTimeMain.getStart());
+				}else{
+					System.out.println("DIDNT LAUNCH");
+				}
 				
 			}
 			
@@ -86,7 +91,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		file.add(exit);
 		options.add(newGrid);
 		options.add(calcPath);
-		
+
 	}
 	public void run() 
 	{
@@ -113,7 +118,6 @@ public class Main extends Canvas implements Runnable, MouseListener
 			{
 				e.printStackTrace();
 			}
-			//runTimeMain = new Main();
 		}
 		
 	}
@@ -122,14 +126,12 @@ public class Main extends Canvas implements Runnable, MouseListener
 		//check
 		requestFocus();
 		addMouseListener(this);
-		nodeList = new Node[15][15];
+		nodeList = new Node[10][10];
 		refreshNodes();
 		SetMazeDirections();
 	}
 	public void refreshNodes()
 	{
-		target = null;
-		start = null;
 		for(int i = 0; i < nodeList.length; i++){
 			for(int j = 0; j < nodeList[i].length; j++)
 			{
@@ -138,6 +140,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 			}
 		}	
 	}
+
 	public void SetMazeDirections()
 	{
 		for(int i = 0; i < nodeList.length; i++){
@@ -181,34 +184,38 @@ public class Main extends Canvas implements Runnable, MouseListener
 		new Thread(this).start();
 	}
 	public void mousePressed(MouseEvent e) {
-
-		// 1 is for left Click
-		// 2 is for Middle Click
-		// 3 is for Right Click
-
 		Node clickedNode = getNodeAt(e.getX(),e.getY());
-
 		if(clickedNode == null) return;
-			clickedNode.Clicked(e.getButton());
+
+		if(clickedNode.isWall()){
+			clickedNode.clearNode();
+			return;
+		}
+
+		clickedNode.Clicked(e.getButton());
+
+		if(clickedNode.isEnd())
+		{	
+			if(target != null)
+			{
+				target.clearNode();
+			}
+			target = clickedNode;	
+		}
+		else if(clickedNode.isStart())
+		{
+			
+			if(start != null)
+			{
+				start.clearNode();
+			}
+			start = clickedNode;
+		}	
+
 	
 	}
 	public boolean isMazeComplete(){
-		boolean start = false; 
-		boolean end = false;
-		for(int i = 0; i < nodeList.length; i++){
-			for(int j = 0; j < nodeList[i].length;j++){
-				if(nodeList[i][j].isEnd()){
-					end = true;
-				}else if(nodeList[i][j].isStart()){
-					start = true;
-				}
-			}
-		}
-		if(start && end){
-			return true;
-		}else{
-			return false;
-		}
+		return target == null ? false : true && start == null ? false : true;
 	}
 	private Node getStart(){
 		for(int i = 0; i < nodeList.length; i++){
@@ -222,6 +229,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 	}
 	public boolean breadthSearch()
 	{	
+
 		ArrayList<Node> closed = new ArrayList<Node>();
 		boolean completed = false;
 		boolean succesfull = false;
@@ -229,7 +237,8 @@ public class Main extends Canvas implements Runnable, MouseListener
 
 		while(!completed)
 		{
-			
+				System.out.println("curNode is at x:" + curNode.getX() + " y: " + curNode.getY());
+
 				if(curNode.getLeft() != null && curNode.getLeft().isEnd()) {
 					completed = true;
 					succesfull = true;
@@ -272,10 +281,10 @@ public class Main extends Canvas implements Runnable, MouseListener
 				}
 				else if(curNode.getRight() != null && !closed.contains(curNode.getRight()) &&  curNode.getRight().isPath())
 				{
-					curNode = curNode.getDown();
+					curNode = curNode.getRight();
 					curNode.SetColor(Color.ORANGE);
 					closed.add(curNode);
-				}
+				} 
 				else
 				{
 					completed = true;
@@ -285,6 +294,34 @@ public class Main extends Canvas implements Runnable, MouseListener
 		return succesfull;
 		
 	}
+
+	private void depthFirstSearch(Node curNode){
+		ArrayList<Node> neighbours =  new ArrayList<>();
+		neighbours.add(curNode.getUp());
+		neighbours.add(curNode.getRight());
+		neighbours.add(curNode.getDown());
+		neighbours.add(curNode.getLeft());
+
+		curNode.SetColor(Color.BLUE);
+		for(Node node : neighbours){
+			if(node != null){
+				if(node.isEnd()){
+					break;
+				}else if(!node.isJunction() && !node.isWall()){
+					try
+					{
+						Thread.sleep(500);
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}
+					depthFirstSearch(node);
+				}
+			}
+		}
+	}
+
 	public void LocateJunctions()
 	{
 		for(int i = 0; i < nodeList.length; i++){
@@ -325,6 +362,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 			}
 		}	
 	}	
+
 	public Node getNodeAt(int x, int y)
 	{
 		x -= 15;
