@@ -3,7 +3,7 @@
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.List;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -11,6 +11,10 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import java.util.LinkedList; 
+import java.util.Queue;
+import java.util.*; 
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -22,6 +26,9 @@ import javax.swing.JMenuItem;
 
 public class Main extends Canvas implements Runnable, MouseListener
 {
+
+
+	//TODO FIX THE STUFF FOR FINDING THE END
 
 	private static Node start = null;
 	private static Node target = null;
@@ -79,7 +86,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		calcPath.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				if(runTimeMain.isMazeComplete()){
-					runTimeMain.depthFirstSearch(runTimeMain.getStart());
+					runTimeMain.Astar(runTimeMain.getStart());
 				}else{
 					System.out.println("DIDNT LAUNCH");
 				}
@@ -227,141 +234,88 @@ public class Main extends Canvas implements Runnable, MouseListener
 		}
 		return null;
 	}
-	public boolean breadthSearch()
-	{	
+	private void dfs(Node currentNode){
+		currentNode.SetColor(Color.BLUE);
 
-		ArrayList<Node> closed = new ArrayList<Node>();
-		boolean completed = false;
-		boolean succesfull = false;
-		Node curNode = getStart();
-
-		while(!completed)
-		{
-				System.out.println("curNode is at x:" + curNode.getX() + " y: " + curNode.getY());
-
-				if(curNode.getLeft() != null && curNode.getLeft().isEnd()) {
-					completed = true;
-					succesfull = true;
-					break;
-				}
-				if(curNode.getRight() != null && curNode.getRight().isEnd()) {
-					completed = true;
-					succesfull = true;
-					break;
-				}
-				if( curNode.getUp() != null && curNode.getUp().isEnd()) {
-					completed = true;
-					succesfull = true;
-					break;
-				}
-				if( curNode.getDown() != null && curNode.getDown().isEnd()) {
-					completed = true;
-					succesfull = true;
-					break;
-				}
+		for(Node adjacent : currentNode.getNeighbours()){
+			if(adjacent !=  null && !adjacent.isWall()&& !adjacent.isJunction() && !adjacent.isEnd()){
 				
+				try
+				{
+					Thread.sleep(100);
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+				dfs(adjacent);
 				
-				if(curNode.getLeft() != null && !closed.contains(curNode.getLeft()) && curNode.getLeft().isPath())
-				{
-					curNode = curNode.getLeft();
-					curNode.SetColor(Color.ORANGE);
-					closed.add(curNode);
-				}
-				else if(curNode.getDown() != null && !closed.contains(curNode.getDown()) &&  curNode.getDown().isPath())
-				{
-					curNode = curNode.getDown();
-					curNode.SetColor(Color.ORANGE);
-					closed.add(curNode);
-				}
-				else if(curNode.getUp() != null && !closed.contains(curNode.getUp()) &&  curNode.getUp().isPath())
-				{
-					curNode = curNode.getUp();
-					curNode.SetColor(Color.ORANGE);
-					closed.add(curNode);
-				}
-				else if(curNode.getRight() != null && !closed.contains(curNode.getRight()) &&  curNode.getRight().isPath())
-				{
-					curNode = curNode.getRight();
-					curNode.SetColor(Color.ORANGE);
-					closed.add(curNode);
-				} 
-				else
-				{
-					completed = true;
-					succesfull = false;
-				}
+			}
 		}
-		return succesfull;
+	}
+
+	private void Astar(Node curNode){
+		List<Node> currentNeighbours = curNode.getNeighbours();
+		double min_distance = currentNeighbours.get(0).distanceTo(target);
+		Node min_node = currentNeighbours.get(0);
+		
+		for(Node adjacent : curNode.getNeighbours()){
+			if(adjacent !=  null && !adjacent.isWall()&& !adjacent.isJunction() && !adjacent.isEnd()){
+				double current_distance = adjacent.distanceTo(target);
+				System.out.println(current_distance);
+				if(current_distance < min_distance){
+					min_distance = current_distance;
+					min_node = adjacent;
+				}
+			}
+		}
+		try
+		{
+			Thread.sleep(100);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		if(min_node != null){
+			System.out.println("hey yo I entered here");
+			min_node.SetColor(Color.BLUE);
+			Astar(min_node);
+		}
 		
 	}
 
-	private void depthFirstSearch(Node curNode){
-		ArrayList<Node> neighbours =  new ArrayList<>();
-		neighbours.add(curNode.getUp());
-		neighbours.add(curNode.getRight());
-		neighbours.add(curNode.getDown());
-		neighbours.add(curNode.getLeft());
+	private void bfs(Node start){
+		Queue<Node> queue =  new LinkedList<>();
 
-		curNode.SetColor(Color.BLUE);
-		for(Node node : neighbours){
-			if(node != null){
-				if(node.isEnd()){
-					break;
-				}else if(!node.isJunction() && !node.isWall()){
-					try
-					{
-						Thread.sleep(500);
+		queue.add(start);
+
+		while(!queue.isEmpty()){
+
+			Node curNode = queue.poll();
+			if(curNode.isEnd()){
+				return;
+			}
+			
+			if (!curNode.isJunction()){
+				curNode.SetColor(Color.BLUE);
+
+				for(Node adjacent : curNode.getNeighbours()){
+					if(adjacent !=  null && !adjacent.isWall() && !adjacent.isJunction() ){
+						queue.add(adjacent);
 					}
-					catch(Exception e)
-					{
-						e.printStackTrace();
-					}
-					depthFirstSearch(node);
+				}
+				try
+				{
+					Thread.sleep(100);
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
 				}
 			}
 		}
 	}
-
-	public void LocateJunctions()
-	{
-		for(int i = 0; i < nodeList.length; i++){
-			for(int j = 0; j < nodeList[i].length; j++)
-			{
-				Node curNode = nodeList[i][j];
-				if(curNode != null && curNode.isPath())
-				{
-					if(curNode.getLeft() != null && curNode.getRight() != null &&  curNode.getUp() != null && curNode.getDown() != null)
-					{
-						if((!curNode.getLeft().isWall()  || !curNode.getRight().isWall()) && (!curNode.getUp().isWall() || !curNode.getDown().isWall()))
-						{
-							curNode.SetColor(Color.BLUE);
-							Junctions.add(curNode);
-						}
-						if(!curNode.getLeft().isWall() && curNode.getRight().isWall()  && curNode.getUp().isWall()  && curNode.getDown().isWall() )
-						{
-							curNode.SetColor(Color.BLUE);
-							Junctions.add(curNode);
-						}
-						if(curNode.getLeft().isWall()  && !curNode.getRight().isWall() && curNode.getUp().isWall()  && curNode.getDown().isWall() )
-						{
-							curNode.SetColor(Color.BLUE);
-							Junctions.add(curNode);
-						}
-						if(curNode.getLeft().isWall()  && curNode.getRight().isWall()  && !curNode.getUp().isWall() && curNode.getDown().isWall() )
-						{
-							curNode.SetColor(Color.BLUE);
-							Junctions.add(curNode);
-						}
-						if(curNode.getLeft().isWall() && curNode.getRight().isWall()  && curNode.getUp().isWall()  && !curNode.getDown().isWall())
-						{
-							curNode.SetColor(Color.BLUE);
-							Junctions.add(curNode);
-						}
-					}
-				}
-			}
-		}	
-	}	
 
 	public Node getNodeAt(int x, int y)
 	{
@@ -369,6 +323,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		x /= 35;
 		y -= 15;
 		y /= 35;
+
 		System.out.println(x + ":" + y);
 		if(x >= 0 && y >= 0 && x < nodeList.length && y < nodeList[x].length)
 		{

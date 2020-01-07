@@ -1,7 +1,11 @@
 
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.lang.Math;
 import java.awt.Color;
 import java.awt.Graphics2D;
+
 
 
 public class Node {
@@ -22,6 +26,13 @@ public class Node {
 		Ypos = y;
 	}
 	public Node(){}
+
+	public double distanceTo(Node targetNode){
+		int x = (targetNode.getX() - Xpos) * (targetNode.getX() - Xpos);
+		int y = (targetNode.getY() - Ypos) * (targetNode.getY() - Ypos); 
+		
+		return Math.sqrt(x + y);
+	}
 	public void render(Graphics2D g)
 	{
 		g.setColor(Color.BLACK);
@@ -61,6 +72,7 @@ public class Node {
 	{ 
 		nodeColor = c;
 	}
+
 	public Color getColor()
 	{
 		return nodeColor;
@@ -71,6 +83,9 @@ public class Node {
 		Nright = r;
 		Nup = u;
 		Ndown = d;
+	}
+	public List<Node> getNeighbours(){
+		return Arrays.asList(left,up,right,down);
 	}
 	public void setDirections(Node l,Node r, Node u, Node d)
 	{
