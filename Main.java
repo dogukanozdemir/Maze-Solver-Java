@@ -3,18 +3,12 @@
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-import java.util.LinkedList; 
-import java.util.Queue;
-import java.util.*; 
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -34,7 +28,6 @@ public class Main extends Canvas implements Runnable, MouseListener
 	private static Node target = null;
 	
 	private Node[][] nodeList;
-	private ArrayList<Node> Junctions = new ArrayList<Node>();
 	private static Main runTimeMain;
 
 	
@@ -64,14 +57,21 @@ public class Main extends Canvas implements Runnable, MouseListener
 		JMenuBar bar = new JMenuBar();
 		bar.setBounds(0, 0, WIDTH, 25);
 		frame.add(bar);
-		JMenu file = new JMenu("File");
-		bar.add(file);
-		JMenu options =  new JMenu("Options");
-		bar.add(options);
+		JMenu fileMenu = new JMenu("File");
+		bar.add(fileMenu);
+		JMenu boardMenu =  new JMenu("Board");
+		bar.add(boardMenu);
+		JMenu algorithmsMenu =  new JMenu("Algorithms");
+		bar.add(algorithmsMenu);
 		
-		JMenuItem exit =  new JMenuItem("Exit");
-		JMenuItem newGrid =  new JMenuItem("New Board");
-		JMenuItem calcPath =  new JMenuItem("Calculate Path");
+		JMenuItem exit = new JMenuItem("Exit");
+		JMenuItem newGrid = new JMenuItem("New Board");
+
+		JMenuItem bfsItem = new JMenuItem("Breadth-First Search");
+		JMenuItem dfsItem = new JMenuItem("Depth-First Search");
+		JMenuItem astarItem = new JMenuItem("A-start Search");
+		
+		
 		
 		exit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -83,10 +83,32 @@ public class Main extends Canvas implements Runnable, MouseListener
 				runTimeMain.refreshNodes();
 			}
 		});
-		calcPath.addActionListener(new ActionListener(){
+		bfsItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				if(runTimeMain.isMazeComplete()){
-					runTimeMain.Astar(runTimeMain.getStart());
+					Algorithm.bfs(runTimeMain.getStart());
+				}else{
+					System.out.println("DIDNT LAUNCH");
+				}
+				
+			}
+			
+		});
+		dfsItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				if(runTimeMain.isMazeComplete()){
+					Algorithm.dfs(runTimeMain.getStart());
+				}else{
+					System.out.println("DIDNT LAUNCH");
+				}
+				
+			}
+			
+		});
+		astarItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				if(runTimeMain.isMazeComplete()){
+					Algorithm.Astar(runTimeMain.getStart(),runTimeMain.target);
 				}else{
 					System.out.println("DIDNT LAUNCH");
 				}
@@ -95,9 +117,11 @@ public class Main extends Canvas implements Runnable, MouseListener
 			
 		});
 		
-		file.add(exit);
-		options.add(newGrid);
-		options.add(calcPath);
+		fileMenu.add(exit);
+		boardMenu.add(newGrid);
+		algorithmsMenu.add(dfsItem);
+		algorithmsMenu.add(bfsItem);
+		algorithmsMenu.add(astarItem);
 
 	}
 	public void run() 
@@ -234,89 +258,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		}
 		return null;
 	}
-	private void dfs(Node currentNode){
-		currentNode.SetColor(Color.BLUE);
-
-		for(Node adjacent : currentNode.getNeighbours()){
-			if(adjacent !=  null && !adjacent.isWall()&& !adjacent.isJunction() && !adjacent.isEnd()){
-				
-				try
-				{
-					Thread.sleep(100);
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-				}
-				dfs(adjacent);
-				
-			}
-		}
-	}
-
-	private void Astar(Node curNode){
-		List<Node> currentNeighbours = curNode.getNeighbours();
-		double min_distance = currentNeighbours.get(0).distanceTo(target);
-		Node min_node = currentNeighbours.get(0);
-		
-		for(Node adjacent : curNode.getNeighbours()){
-			if(adjacent !=  null && !adjacent.isWall()&& !adjacent.isJunction() && !adjacent.isEnd()){
-				double current_distance = adjacent.distanceTo(target);
-				System.out.println(current_distance);
-				if(current_distance < min_distance){
-					min_distance = current_distance;
-					min_node = adjacent;
-				}
-			}
-		}
-		try
-		{
-			Thread.sleep(100);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		if(min_node != null){
-			System.out.println("hey yo I entered here");
-			min_node.SetColor(Color.BLUE);
-			Astar(min_node);
-		}
-		
-	}
-
-	private void bfs(Node start){
-		Queue<Node> queue =  new LinkedList<>();
-
-		queue.add(start);
-
-		while(!queue.isEmpty()){
-
-			Node curNode = queue.poll();
-			if(curNode.isEnd()){
-				return;
-			}
-			
-			if (!curNode.isJunction()){
-				curNode.SetColor(Color.BLUE);
-
-				for(Node adjacent : curNode.getNeighbours()){
-					if(adjacent !=  null && !adjacent.isWall() && !adjacent.isJunction() ){
-						queue.add(adjacent);
-					}
-				}
-				try
-				{
-					Thread.sleep(100);
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
+	
 	public Node getNodeAt(int x, int y)
 	{
 		x -= 15;
@@ -343,15 +285,31 @@ public class Main extends Canvas implements Runnable, MouseListener
 			return true;
 		return false;
 	}
+
 	
 	
 	
-	public void mouseClicked(MouseEvent e) {	
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
-	public void mouseEntered(MouseEvent e) {
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
-	public void mouseExited(MouseEvent e) {
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
-	public void mouseReleased(MouseEvent e) {
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
