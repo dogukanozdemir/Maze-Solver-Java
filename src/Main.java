@@ -157,7 +157,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		//check
 		requestFocus();
 		addMouseListener(this);
-		nodeList = new Node[10][10];
+		nodeList = new Node[15][15];
 		refreshNodes();
 		SetMazeDirections();
 	}
