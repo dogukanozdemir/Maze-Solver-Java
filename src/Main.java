@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
-
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -31,8 +31,12 @@ public class Main extends Canvas implements Runnable, MouseListener
 	private static Main runTimeMain;
 
 	
-	private final static int WIDTH = 600;
-	private final static int HEIGHT = 640;
+	private final static int WIDTH = 1024;
+	private final static int HEIGHT = 768;
+	
+	private final static int NODES_WITDH = 28;
+	private final static int NODES_HEIGHT = 19;
+	
 	public static void main(String[] args)
 	{
 		JFrame frame = new JFrame("Maze Solver");
@@ -65,7 +69,9 @@ public class Main extends Canvas implements Runnable, MouseListener
 		bar.add(algorithmsMenu);
 		
 		JMenuItem exit = new JMenuItem("Exit");
+		
 		JMenuItem newGrid = new JMenuItem("New Board");
+		JMenuItem clearSearch = new JMenuItem("Clear Search Results");
 
 		JMenuItem bfsItem = new JMenuItem("Breadth-First Search");
 		JMenuItem dfsItem = new JMenuItem("Depth-First Search");
@@ -83,6 +89,12 @@ public class Main extends Canvas implements Runnable, MouseListener
 				runTimeMain.refreshNodes();
 			}
 		});
+		clearSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				runTimeMain.clearSearchResults();
+			}
+		});
+		
 		bfsItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				if(runTimeMain.isMazeComplete()){
@@ -119,6 +131,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		
 		fileMenu.add(exit);
 		boardMenu.add(newGrid);
+		boardMenu.add(clearSearch);
 		algorithmsMenu.add(dfsItem);
 		algorithmsMenu.add(bfsItem);
 		algorithmsMenu.add(astarItem);
@@ -157,7 +170,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		//check
 		requestFocus();
 		addMouseListener(this);
-		nodeList = new Node[15][15];
+		nodeList = new Node[NODES_WITDH][NODES_HEIGHT];
 		refreshNodes();
 		SetMazeDirections();
 	}
@@ -170,6 +183,84 @@ public class Main extends Canvas implements Runnable, MouseListener
 				nodeList[i][j].clearNode();			
 			}
 		}	
+	}
+	public boolean breadthSearch()
+	{	
+		if(start == null || target == null) return false;
+
+		ArrayList<Node> closed = new ArrayList<Node>();
+		boolean completed = false;
+		boolean succesfull = false;
+		Node curNode = start;
+		while(!completed)
+		{
+
+				if(curNode.getLeft() != null && curNode.getLeft().isEnd()) {
+					completed = true;
+					succesfull = true;
+					break;
+				}
+				if(curNode.getRight() != null && curNode.getRight().isEnd()) {
+					completed = true;
+					succesfull = true;
+					break;
+				}
+				if( curNode.getUp() != null && curNode.getUp().isEnd()) {
+					completed = true;
+					succesfull = true;
+					break;
+				}
+				if( curNode.getDown() != null && curNode.getDown().isEnd()) {
+					completed = true;
+					succesfull = true;
+					break;
+				}
+
+
+				if(curNode.getLeft() != null && !closed.contains(curNode.getLeft()) && curNode.getLeft().isPath())
+				{
+					curNode = curNode.getLeft();
+					curNode.setColor(Color.ORANGE);
+					closed.add(curNode);
+				}
+				else if(curNode.getDown() != null && !closed.contains(curNode.getDown()) &&  curNode.getDown().isPath())
+				{
+					curNode = curNode.getDown();
+					curNode.setColor(Color.ORANGE);
+					closed.add(curNode);
+				}
+				else if(curNode.getUp() != null && !closed.contains(curNode.getUp()) &&  curNode.getUp().isPath())
+				{
+					curNode = curNode.getUp();
+					curNode.setColor(Color.ORANGE);
+					closed.add(curNode);
+				}
+				else if(curNode.getRight() != null && !closed.contains(curNode.getRight()) &&  curNode.getRight().isPath())
+				{
+					curNode = curNode.getDown();
+					curNode.setColor(Color.ORANGE);
+					closed.add(curNode);
+				}
+				else
+				{
+					completed = true;
+					succesfull = false;
+				}
+		}
+		return succesfull;
+
+	}
+	public void clearSearchResults() {
+		for(int i = 0; i < nodeList.length; i++){
+			for(int j = 0; j < nodeList[i].length; j++)
+			{
+				if (nodeList[i][j].isJunction()) {
+					nodeList[i][j].clearNode();
+				}
+			}
+		}
+		target.setColor(Color.RED);
+		start.setColor(Color.GREEN);
 	}
 
 	public void SetMazeDirections()

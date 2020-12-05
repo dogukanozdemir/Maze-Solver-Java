@@ -68,7 +68,7 @@ public class Node {
 		
 		}
 	}
-	public void SetColor(Color c)
+	public void setColor(Color c)
 	{ 
 		nodeColor = c;
 	}
@@ -85,7 +85,17 @@ public class Node {
 		Ndown = d;
 	}
 	public List<Node> getNeighbours(){
-		return Arrays.asList(left,up,right,down);
+		List<Node> neighbours = new ArrayList<>();
+		if(left != null && left.isPath())
+			neighbours.add(left);
+		if(down != null && down.isPath())
+			neighbours.add(down);
+		if(right != null && right.isPath())
+			neighbours.add(right);
+		if(up != null && up.isPath())
+			neighbours.add(up);
+			
+		return neighbours;
 	}
 	public void setDirections(Node l,Node r, Node u, Node d)
 	{
@@ -141,7 +151,7 @@ public class Node {
 	}
 	public boolean isPath()
 	{
-		return (nodeColor == Color.LIGHT_GRAY || nodeColor == Color.BLUE) ? true : false;
+		return (nodeColor == Color.LIGHT_GRAY || nodeColor == Color.RED) ? true : false;
 	}
 	public boolean isJunction()
 	{
