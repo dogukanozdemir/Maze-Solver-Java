@@ -69,7 +69,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		bar.add(algorithmsMenu);
 		
 		JMenuItem exit = new JMenuItem("Exit");
-		
+
 		JMenuItem newGrid = new JMenuItem("New Board");
 		JMenuItem clearSearch = new JMenuItem("Clear Search Results");
 
@@ -98,7 +98,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		bfsItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				if(runTimeMain.isMazeComplete()){
-					Algorithm.bfs(runTimeMain.getStart());
+					Algorithm.bfs(runTimeMain.start,runTimeMain.target,runTimeMain.NODES_WITDH,runTimeMain.NODES_HEIGHT);
 				}else{
 					System.out.println("DIDNT LAUNCH");
 				}
@@ -109,7 +109,7 @@ public class Main extends Canvas implements Runnable, MouseListener
 		dfsItem.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				if(runTimeMain.isMazeComplete()){
-					Algorithm.dfs(runTimeMain.getStart());
+					Algorithm.dfs(runTimeMain.getStart(),runTimeMain.target,runTimeMain.NODES_WITDH,runTimeMain.NODES_HEIGHT);
 				}else{
 					System.out.println("DIDNT LAUNCH");
 				}
