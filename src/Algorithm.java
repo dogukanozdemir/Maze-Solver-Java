@@ -54,7 +54,7 @@ public class Algorithm {
 				break;
 			}
 
-			if (!curNode.isJunction()) {
+			if (!curNode.isSearched()) {
 				curNode.setColor(Color.BLUE);
 
 				for (Node adjacent : curNode.getNeighbours()) {
@@ -97,7 +97,7 @@ public class Algorithm {
 		Node min_node = currentNeighbours.get(0);
 
 		for (Node adjacent : curNode.getNeighbours()) {
-			if (adjacent != null && !adjacent.isWall() && !adjacent.isJunction() && !adjacent.isEnd()) {
+			if (adjacent != null && !adjacent.isWall() && !adjacent.isSearched() && !adjacent.isEnd()) {
 				double current_distance = adjacent.distanceTo(targetNode);
 				System.out.println(current_distance);
 				if (current_distance < min_distance) {

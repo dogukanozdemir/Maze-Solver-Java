@@ -153,9 +153,9 @@ public class Node {
 	{
 		return (nodeColor == Color.LIGHT_GRAY || nodeColor == Color.RED) ? true : false;
 	}
-	public boolean isJunction()
+	public boolean isSearched()
 	{
-		return (nodeColor == Color.BLUE) ? true : false;
+		return (nodeColor == Color.BLUE || nodeColor == Color.ORANGE) ? true : false;
 	}
 	
 	
