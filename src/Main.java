@@ -7,8 +7,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -74,11 +77,11 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		JMenuItem dfsItem = new JMenuItem("Depth-First Search");
 		JMenuItem astarItem = new JMenuItem("A-start Search");
 
-		
 		openMaze.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+
 				try {
-					runTimeMain.saveMaze();
+					runTimeMain.openMaze();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -152,6 +155,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 
 		fileMenu.add(exit);
 		fileMenu.add(saveMaze);
+		fileMenu.add(openMaze);
 		boardMenu.add(newGrid);
 		boardMenu.add(clearSearch);
 		algorithmsMenu.add(dfsItem);
@@ -202,32 +206,66 @@ public class Main extends Canvas implements Runnable, MouseListener {
 
 	public void saveMaze() throws IOException {
 		JFileChooser fileChooser = new JFileChooser();
-        int option = fileChooser.showOpenDialog(frame);
-        if(option == JFileChooser.APPROVE_OPTION){
-            File file = fileChooser.getSelectedFile();
-            BufferedWriter outputWriter = new BufferedWriter(new FileWriter(file.getAbsolutePath() + ".maze"));
-            for(int i = 0; i < nodeList.length;i++) {
-    			for(int j = 0; j < nodeList[i].length; j++) {
-    				if(nodeList[i][j].isWall()) {
-    					outputWriter.write("1");
-    				}
-    				else if(nodeList[i][j].isStart()) {
-    					outputWriter.write("2");
-    				}
-    				else if(nodeList[i][j].isEnd()) {
-    					outputWriter.write("3");
-    				}else{
-    					outputWriter.write("0");
-    				}
-    			}
-    		}
-            outputWriter.flush();  
-            outputWriter.close();
-        }
-          
+		int option = fileChooser.showSaveDialog(frame);
+		if (option == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			String ext = file.getAbsolutePath().endsWith(".maze") ? "" : ".maze";
+			BufferedWriter outputWriter = new BufferedWriter(new FileWriter(file.getAbsolutePath() + ext));
+			for (int i = 0; i < nodeList.length; i++) {
+				for (int j = 0; j < nodeList[i].length; j++) {
+					if (nodeList[i][j].isWall()) {
+						outputWriter.write("1");
+					} else if (nodeList[i][j].isStart()) {
+						outputWriter.write("2");
+					} else if (nodeList[i][j].isEnd()) {
+						outputWriter.write("3");
+					} else {
+						outputWriter.write("0");
+					}
+				}
+				outputWriter.newLine();
+			}
+			outputWriter.flush();
+			outputWriter.close();
+		}
+
 	}
-	public void openMaze() {
-		
+
+	public void openMaze() throws IOException {
+		JFileChooser fileChooser = new JFileChooser();
+		int option = fileChooser.showOpenDialog(frame);
+		if (option == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			BufferedReader reader = new BufferedReader(new FileReader(file.getAbsolutePath()));
+			String line = null;
+			for (int i = 0; i < NODES_WIDTH; i++) {
+				line = reader.readLine();
+				for (int j = 0; j < NODES_HEIGHT; j++) {
+					
+					//nodeList[i][j].setColor(Color.BLACK);
+					int nodeType = Character.getNumericValue(line.charAt(j));
+					System.out.println("node is " + nodeType);
+					switch (nodeType) {
+					case 0:
+						nodeList[i][j].setColor(Color.LIGHT_GRAY);
+						break;
+					case 1:
+						nodeList[i][j].setColor(Color.BLACK);
+						break;
+
+					case 2:
+						nodeList[i][j].setColor(Color.GREEN);
+						break;
+					case 3:
+						nodeList[i][j].setColor(Color.RED);
+						break;
+					}
+				}
+
+			}
+			reader.close();
+			// System.out.println(stringMaze);
+		}
 	}
 
 	public void clearSearchResults() {

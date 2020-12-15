@@ -137,25 +137,25 @@ public class Node {
 	}
 	public boolean isWall()
 	{
-		return (nodeColor == Color.BLACK) ? true : false;
+		return (nodeColor == Color.BLACK);
 	}
 	
 	public boolean isStart()
 	{
-		return (nodeColor == Color.GREEN) ? true : false;
+		return (nodeColor == Color.GREEN);
 	}
 	
 	public boolean isEnd()
 	{
-		return (nodeColor == Color.RED) ? true : false;
+		return (nodeColor == Color.RED);
 	}
 	public boolean isPath()
 	{
-		return (nodeColor == Color.LIGHT_GRAY || nodeColor == Color.RED) ? true : false;
+		return (nodeColor == Color.LIGHT_GRAY );
 	}
 	public boolean isSearched()
 	{
-		return (nodeColor == Color.BLUE || nodeColor == Color.ORANGE) ? true : false;
+		return (nodeColor == Color.BLUE || nodeColor == Color.ORANGE);
 	}
 	
 	
