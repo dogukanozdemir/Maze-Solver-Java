@@ -1,4 +1,4 @@
 HEY
 
 
-![Interactive Maze](https://gph.is/g/aj7d88G)
+![Interactive Maze](https://media.giphy.com/media/mrxLQ1QGOIKJGgUyQG/giphy.gif)
