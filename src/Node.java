@@ -123,18 +123,6 @@ public class Node {
 		Ypos = y;
 		return this;
 	}
-	public Node getLeft() {
-		return left;
-	}
-	public Node getRight() {
-		return right;
-	}
-	public Node getUp() {
-		return up;
-	}
-	public Node getDown() {
-		return down;
-	}
 	public boolean isWall()
 	{
 		return (nodeColor == Color.BLACK);
@@ -151,7 +139,7 @@ public class Node {
 	}
 	public boolean isPath()
 	{
-		return (nodeColor == Color.LIGHT_GRAY );
+		return (nodeColor == Color.LIGHT_GRAY || nodeColor == Color.RED );
 	}
 	public boolean isSearched()
 	{

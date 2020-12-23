@@ -108,7 +108,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		});
 		newGrid.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				runTimeMain.createNodes();
+				runTimeMain.createNodes(true);
 			}
 		});
 		clearSearch.addActionListener(new ActionListener() {
@@ -192,13 +192,31 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		requestFocus();
 		addMouseListener(this);
 		nodeList = new Node[NODES_WIDTH][NODES_HEIGHT];
-		createNodes();
+		createNodes(false);
+		setMazeDirections();
 	}
-
-	public void createNodes() {
+	public void setMazeDirections() {
 		for (int i = 0; i < nodeList.length; i++) {
 			for (int j = 0; j < nodeList[i].length; j++) {
-				nodeList[i][j] = new Node(i, j).setX(15 + i * 35).setY(15 + j * 35);
+				Node up = null,down = null,left = null,right = null;
+				int u = j - 1;
+				int d = j + 1;
+				int l = i - 1;
+				int r = i + 1;
+				
+				if(u >= 0) up = nodeList[i][u];
+				if(d < NODES_HEIGHT) down =  nodeList[i][d];
+				if(l >= 0) left = nodeList[l][j];
+				if(r < NODES_WIDTH) right =  nodeList[r][j];
+				
+				nodeList[i][j].setDirections(left, right, up, down);
+			}	
+		}
+	}
+	public void createNodes(boolean ref) {
+		for (int i = 0; i < nodeList.length; i++) {
+			for (int j = 0; j < nodeList[i].length; j++) {
+				if(!ref) nodeList[i][j] = new Node(i, j).setX(15 + i * 35).setY(15 + j * 35);
 				nodeList[i][j].clearNode();
 			}
 		}
@@ -255,9 +273,11 @@ public class Main extends Canvas implements Runnable, MouseListener {
 
 					case 2:
 						nodeList[i][j].setColor(Color.GREEN);
+						start = nodeList[i][j];
 						break;
 					case 3:
 						nodeList[i][j].setColor(Color.RED);
+						target = nodeList[i][j];
 						break;
 					}
 				}
@@ -331,7 +351,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 	private Node getStart() {
 		for (int i = 0; i < nodeList.length; i++) {
 			for (int j = 0; j < nodeList[i].length; j++) {
-				if (nodeList[i][j].isStart()) {
+				if (nodeList[i][j].isEnd()) {
 					return nodeList[i][j];
 				}
 			}

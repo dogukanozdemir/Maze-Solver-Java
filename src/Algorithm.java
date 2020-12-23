@@ -36,7 +36,7 @@ public class Algorithm {
 				break;
 			}
 		}
-		shortpath(prev, end);
+		//shortpath(prev, end);
 
 	}
 
@@ -45,7 +45,6 @@ public class Algorithm {
 		Node[][] prev = new Node[graphWidth][graphHeight];
 
 		queue.add(start);
-
 		while (!queue.isEmpty()) {
 
 			Node curNode = queue.poll();
@@ -58,14 +57,13 @@ public class Algorithm {
 				curNode.setColor(Color.BLUE);
 
 				for (Node adjacent : curNode.getNeighbours()) {
-					
 					queue.add(adjacent);
 					prev[adjacent.getX()][adjacent.getY()] = curNode;
 					
 
 				}
 				try {
-					Thread.sleep(10);
+					Thread.sleep(25);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -76,6 +74,7 @@ public class Algorithm {
 	}
 
 	private static  void shortpath(Node[][] prev, Node end) {
+		System.out.println("gonna look at somtin");
 		Node pathConstructor = end;
 		while(pathConstructor != null) {
 			pathConstructor = prev[pathConstructor.getX()][pathConstructor.getY()];
