@@ -1,4 +1,4 @@
-# Introduction
+# Overview
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 
 Maze-solver-java is application with an interactive GUI that lets you design your own mazes. You can choose from the available algorithms to search and find the shortest path from your desired start-to-end point.
