@@ -21,6 +21,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 public class Main extends Canvas implements Runnable, MouseListener {
 
@@ -30,6 +32,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 
 	private Node[][] nodeList;
 	private static Main runTimeMain;
+	private static Algorithm algorithm;
 
 	private final static int WIDTH = 1024;
 	private final static int HEIGHT = 768;
@@ -44,6 +47,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		frame.setResizable(false);
 		frame.setLayout(null);
 		Main m = new Main();
+		algorithm =  new Algorithm();
 		// check
 		m.setBounds(0, 25, WIDTH, HEIGHT);
 		SetupMenu(frame);
@@ -76,6 +80,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		JMenuItem bfsItem = new JMenuItem("Breadth-First Search");
 		JMenuItem dfsItem = new JMenuItem("Depth-First Search");
 		JMenuItem astarItem = new JMenuItem("A-start Search");
+		JMenuItem searchTime = new JMenuItem("Exploring time per Node");
 
 		openMaze.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -120,7 +125,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		bfsItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (runTimeMain.isMazeValid()) {
-					Algorithm.bfs(runTimeMain.start, runTimeMain.target, runTimeMain.NODES_WIDTH,
+					algorithm.bfs(runTimeMain.start, runTimeMain.target, runTimeMain.NODES_WIDTH,
 							runTimeMain.NODES_HEIGHT);
 				} else {
 					System.out.println("DIDNT LAUNCH");
@@ -132,7 +137,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		dfsItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (runTimeMain.isMazeValid()) {
-					Algorithm.dfs(runTimeMain.getStart());
+					algorithm.dfs(runTimeMain.getStart());
 				} else {
 					System.out.println("DIDNT LAUNCH");
 				}
@@ -143,7 +148,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		astarItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (runTimeMain.isMazeValid()) {
-					Algorithm.Astar(runTimeMain.start, runTimeMain.target, runTimeMain.NODES_WIDTH,
+					algorithm.Astar(runTimeMain.start, runTimeMain.target, runTimeMain.NODES_WIDTH,
 							runTimeMain.NODES_HEIGHT);
 				} else {
 					System.out.println("DIDNT LAUNCH");
@@ -151,6 +156,12 @@ public class Main extends Canvas implements Runnable, MouseListener {
 
 			}
 
+		});
+		searchTime.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String input = JOptionPane.showInputDialog(null, "Enter a time it takes to search each node in miliseconds(default = 100ms) ", "Search Time", JOptionPane.QUESTION_MESSAGE);
+				algorithm.setSearchTime(Integer.parseInt(input));
+			}
 		});
 
 		fileMenu.add(exit);
@@ -161,6 +172,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		algorithmsMenu.add(dfsItem);
 		algorithmsMenu.add(bfsItem);
 		algorithmsMenu.add(astarItem);
+		algorithmsMenu.add(searchTime);
 
 	}
 

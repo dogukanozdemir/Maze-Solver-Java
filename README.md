@@ -20,7 +20,7 @@ The algorithms included are:
 
 * Breadth First Search
 * Depth First Search
-* A* star Search (WIP)
+* A* star Search 
 
 ![BFS](https://media.giphy.com/media/wnpL2WnXoXGF4UyPKL/giphy.gif)
 
