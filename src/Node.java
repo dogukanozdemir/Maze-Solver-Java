@@ -27,11 +27,11 @@ public class Node {
 	}
 	public Node(){}
 
-	public double distanceTo(Node targetNode){
-		int x = (targetNode.getX() - Xpos) * (targetNode.getX() - Xpos);
-		int y = (targetNode.getY() - Ypos) * (targetNode.getY() - Ypos); 
+	public static double distance(Node a, Node b){
+		double x = Math.pow(a.Xpos - b.Xpos, 2);
+		double y = Math.pow(a.Ypos - b.Ypos, 2);
 		
-		return Math.sqrt(x + y);
+		return Math.sqrt(x + y );
 	}
 	public void render(Graphics2D g)
 	{

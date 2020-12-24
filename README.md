@@ -9,7 +9,7 @@ Maze-solver-java is application with an interactive GUI that lets you design you
 The algorithms included are:
 
 * Breadth First Search
-* Depth First Search (WIP)
+* Depth First Search
 * A* star Search (WIP)
 * Djikstra (WIP)
   

@@ -1,6 +1,8 @@
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -9,9 +11,8 @@ import java.util.Stack;
 
 public class Algorithm {
 
-	public static void dfs(Node start,Node end, int graphWidth, int graphHeight) {
+	public static void dfs(Node start) {
 		Stack<Node> nodes = new Stack<>();
-		Node[][] prev = new Node[graphWidth][graphHeight];
 		nodes.push(start);
 
 		while (!nodes.empty()) {
@@ -23,7 +24,6 @@ public class Algorithm {
 
 				for (Node adjacent : curNode.getNeighbours()) {
 					nodes.push(adjacent);
-					prev[adjacent.getX()][adjacent.getY()] = curNode;
 				}
 				try {
 					Thread.sleep(25);
@@ -36,7 +36,6 @@ public class Algorithm {
 				break;
 			}
 		}
-		//shortpath(prev, end);
 
 	}
 
@@ -72,6 +71,19 @@ public class Algorithm {
 
 		shortpath(prev, end);
 	}
+	
+	private static Node getLeastHeuristic(List<Node> nodes,Node end) {
+		if(!nodes.isEmpty()) {
+			Node leastH = nodes.get(0);
+			for(int i = 1; i < nodes.size();i++) {
+				if(Node.distance(nodes.get(i), end) < Node.distance(leastH, end)) {
+					leastH = nodes.get(i);
+				}
+			}
+			return leastH;
+		}
+		return null;
+	}
 
 	private static  void shortpath(Node[][] prev, Node end) {
 		System.out.println("gonna look at somtin");
@@ -90,31 +102,30 @@ public class Algorithm {
 		}
 	}
 
-	public static void Astar(Node curNode, Node targetNode) {
-		List<Node> currentNeighbours = curNode.getNeighbours();
-		double min_distance = currentNeighbours.get(0).distanceTo(targetNode);
-		Node min_node = currentNeighbours.get(0);
-
-		for (Node adjacent : curNode.getNeighbours()) {
-			if (adjacent != null && !adjacent.isWall() && !adjacent.isSearched() && !adjacent.isEnd()) {
-				double current_distance = adjacent.distanceTo(targetNode);
-				System.out.println(current_distance);
-				if (current_distance < min_distance) {
-					min_distance = current_distance;
-					min_node = adjacent;
-				}
+	public static void Astar(Node start, Node targetNode) {
+		List<Node> openList = new ArrayList<Node>();
+		List<Node> closedList = new ArrayList<Node>();
+		openList.add(start);
+		
+		while(!openList.isEmpty()) {
+			Node leastH =  getLeastHeuristic(openList,targetNode);
+			if(leastH.isEnd()) {
+				leastH.setColor(Color.MAGENTA);
+				break;
 			}
+			System.out.println();
+			leastH.setColor(Color.BLUE);
+			for (Node adjacent : leastH.getNeighbours()) {
+					openList.add(adjacent);
+			}
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
-		try {
-			Thread.sleep(100);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (min_node != null) {
-			System.out.println("hey yo I entered here");
-			min_node.setColor(Color.BLUE);
-			Astar(min_node, targetNode);
-		}
+		
 	}
 
 

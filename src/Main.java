@@ -132,8 +132,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		dfsItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (runTimeMain.isMazeValid()) {
-					Algorithm.dfs(runTimeMain.getStart(), runTimeMain.target, runTimeMain.NODES_WIDTH,
-							runTimeMain.NODES_HEIGHT);
+					Algorithm.dfs(runTimeMain.getStart());
 				} else {
 					System.out.println("DIDNT LAUNCH");
 				}
@@ -351,7 +350,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 	private Node getStart() {
 		for (int i = 0; i < nodeList.length; i++) {
 			for (int j = 0; j < nodeList[i].length; j++) {
-				if (nodeList[i][j].isEnd()) {
+				if (nodeList[i][j].isStart()) {
 					return nodeList[i][j];
 				}
 			}
