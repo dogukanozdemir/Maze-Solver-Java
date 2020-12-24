@@ -1,6 +1,5 @@
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.lang.Math;
 import java.awt.Color;
@@ -16,7 +15,6 @@ public class Node {
 	private final int WIDTH = 35;
 	private final int HEIGHT = 35;
 	private Node left, right, up, down;
-	private Node Nleft,Nright, Nup,Ndown;
 	
 	
 	
@@ -76,13 +74,6 @@ public class Node {
 	public Color getColor()
 	{
 		return nodeColor;
-	}
-	public void SetJunctionNeighbors(Node l,Node r, Node u, Node d)
-	{
-		Nleft = l;
-		Nright = r;
-		Nup = u;
-		Ndown = d;
 	}
 	public List<Node> getNeighbours(){
 		List<Node> neighbours = new ArrayList<>();

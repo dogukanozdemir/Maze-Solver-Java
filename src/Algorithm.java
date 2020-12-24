@@ -72,11 +72,16 @@ public class Algorithm {
 		shortpath(prev, end);
 	}
 	
-	private static Node getLeastHeuristic(List<Node> nodes,Node end) {
+	private static Node getLeastHeuristic(List<Node> nodes,Node end,Node start) {
 		if(!nodes.isEmpty()) {
 			Node leastH = nodes.get(0);
 			for(int i = 1; i < nodes.size();i++) {
-				if(Node.distance(nodes.get(i), end) < Node.distance(leastH, end)) {
+				double f1 = Node.distance(nodes.get(i), end);
+				double h1 = Node.distance(nodes.get(i), start);
+						
+				double f2 = Node.distance(leastH, end);
+				double h2 = Node.distance(leastH, start);
+				if(f1 + h1 < f2 + h2) {
 					leastH = nodes.get(i);
 				}
 			}
@@ -102,29 +107,35 @@ public class Algorithm {
 		}
 	}
 
-	public static void Astar(Node start, Node targetNode) {
+	public static void Astar(Node start, Node targetNode,  int graphWidth, int graphHeight) {
 		List<Node> openList = new ArrayList<Node>();
 		List<Node> closedList = new ArrayList<Node>();
+		//Node[][] prev = new Node[graphWidth][graphHeight];
 		openList.add(start);
 		
 		while(!openList.isEmpty()) {
-			Node leastH =  getLeastHeuristic(openList,targetNode);
+			Node leastH =  getLeastHeuristic(openList,targetNode,start);
+			openList.remove(leastH);
 			if(leastH.isEnd()) {
 				leastH.setColor(Color.MAGENTA);
 				break;
 			}
-			System.out.println();
-			leastH.setColor(Color.BLUE);
-			for (Node adjacent : leastH.getNeighbours()) {
+			
+			if(!leastH.isSearched()) {
+				leastH.setColor(Color.BLUE);
+				for (Node adjacent : leastH.getNeighbours()) {
 					openList.add(adjacent);
+					//prev[adjacent.getX()][adjacent.getY()] = leastH;
+				}
 			}
 			try {
-				Thread.sleep(100);
+				Thread.sleep(250);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 		}
+		//shortpath(prev, targetNode);
 		
 	}
 

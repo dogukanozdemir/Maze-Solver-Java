@@ -143,7 +143,8 @@ public class Main extends Canvas implements Runnable, MouseListener {
 		astarItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (runTimeMain.isMazeValid()) {
-					Algorithm.Astar(runTimeMain.getStart(), runTimeMain.target);
+					Algorithm.Astar(runTimeMain.start, runTimeMain.target, runTimeMain.NODES_WIDTH,
+							runTimeMain.NODES_HEIGHT);
 				} else {
 					System.out.println("DIDNT LAUNCH");
 				}
