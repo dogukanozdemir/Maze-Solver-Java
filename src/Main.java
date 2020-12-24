@@ -79,7 +79,7 @@ public class Main extends Canvas implements Runnable, MouseListener {
 
 		JMenuItem bfsItem = new JMenuItem("Breadth-First Search");
 		JMenuItem dfsItem = new JMenuItem("Depth-First Search");
-		JMenuItem astarItem = new JMenuItem("A-start Search");
+		JMenuItem astarItem = new JMenuItem("A-star Search");
 		JMenuItem searchTime = new JMenuItem("Exploring time per Node");
 
 		openMaze.addActionListener(new ActionListener() {
