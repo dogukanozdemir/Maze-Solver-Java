@@ -24,8 +24,8 @@ There are options to save or load mazes from other users or the mazes you previo
 You can refer to the following link for a quick tutorial:
 
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=RNOIqvQUKso
-" target="_blank"><img src="http://img.youtube.com/vi/RNOIqvQUKso/0.jpg" 
+<a href="https://www.youtube.com/watch?v=YfwdDTX9OM0&feature=youtu.be
+" target="_blank"><img src="http://img.youtube.com/vi/YfwdDTX9OM0/0.jpg" 
 alt="Tutorial" width="480" height="320" border="10" /></a>
 
 # Installation (Eclipse)
